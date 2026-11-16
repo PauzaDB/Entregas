@@ -6,7 +6,7 @@ SET search_path TO public; --Para conectar a la ruta del esquema, soluciona erro
 
 
 create table clientes (
-    id_cliente  INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    id_cliente  INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY, --asigna valor de forma automática.
     nombre      VARCHAR(100) NOT NULL,
     email       VARCHAR(150) NOT NULL UNIQUE,
     edad        INT NOT NULL,
@@ -19,8 +19,8 @@ create table if not exists categorias (
     id_categoria INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     nombre       VARCHAR(60) NOT NULL,
     descripcion  VARCHAR(200),
-    CONSTRAINT uq_categorias_nombre UNIQUE (nombre),
-    CONSTRAINT ck_categorias_nombre CHECK (char_length(trim(nombre)) > 0)
+    CONSTRAINT uq_categorias_nombre UNIQUE (nombre), --limita el tipo de dato y los valores son distintos entre si.
+    CONSTRAINT ck_categorias_nombre CHECK (char_length(trim(nombre)) > 0) --elimina espacios en blanco.
     );
 
 create table if not exists productos (
@@ -29,8 +29,8 @@ create table if not exists productos (
     id_categoria    INT NOT NULL,
     precio_unitario NUMERIC(10,2) NOT NULL,
     stock           INT NOT NULL DEFAULT 0,
-    CONSTRAINT ck_productos_precio CHECK (precio_unitario > 0),
-    CONSTRAINT ck_productos_stock  CHECK (stock >= 0),
+    CONSTRAINT ck_productos_precio CHECK (precio_unitario > 0),  --4to CHECK: cantidad vendida mayor a cero.
+    CONSTRAINT ck_productos_stock  CHECK (stock >= 0), --5to CHECK: precio de venta positivo.
     CONSTRAINT fk_productos_categoria FOREIGN KEY (id_categoria)
         REFERENCES categorias (id_categoria)
         ON UPDATE CASCADE ON DELETE RESTRICT
@@ -71,12 +71,12 @@ INSERT INTO categorias (nombre, descripcion) VALUES
     ('Accesorios',  'Accesorios y complementos'),
     ('Hogar',       'Artículos para el hogar');
 
-INSERT INTO productos (nombre, precio_unitario, stock) values
-    ('Notebook', 850000.00, 15),
-    ('Auriculares Bluetooth', 45000.00, 60),
-    ('Mouse Inalámbrico', 12000.00, 120),
-    ('Microhondas', 38000.00, 40),
-    ('Cafetera Express', 135000.00, 25);
+INSERT INTO productos (nombre, id_categoria, precio_unitario, stock) VALUES
+    ('Notebook 15',           1, 850000.00, 15),
+    ('Auriculares Bluetooth', 1,  45000.00, 60),
+    ('Mouse Inalámbrico',     2,  12000.00, 120),
+    ('Mochila Urbana',        2,  38000.00, 40),
+    ('Cafetera Express',      3, 135000.00, 25);
 
 INSERT INTO ventas (id_cliente, id_producto, cantidad, precio_unitario, fecha_venta) values 
     (1, 1, 1, 850000.00, '2026-10-02'),
